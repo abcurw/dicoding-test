@@ -1,3 +1,5 @@
+[View Screenshots](#screenshots)
+
 ## Quick Start with Docker
 
 ```bash
@@ -207,3 +209,14 @@ The Laravel backend is configured to accept requests from `http://localhost:3000
 
 **Database connection failed:**
 Ensure MySQL is running and credentials in `.env` are correct.
+
+---
+
+## Screenshots
+
+![Vacancy List](d/vacancies.png)
+![Vacancy Detail 1](d/vacancy1.png)
+![Vacancy Detail 2](d/vacancy2.png)
+![Dashboard](d/dashboard.png)
+![Create Vacancy](d/create.png)
+![Edit Vacancy](d/edit.png)
