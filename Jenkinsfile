@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment {
-        // Backend API URL (running on host)
-        API_URL = 'http://localhost:8000/api'
-        FRONTEND_URL = 'http://localhost:3000'
+        // Backend API URL (running on host machine)
+        // Using host IP for Docker-to-host communication on Linux
+        API_URL = 'http://192.168.8.5:8000/api'
+        FRONTEND_URL = 'http://192.168.8.5:3000'
     }
 
     tools {
@@ -28,7 +29,9 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh 'npm ci'
-                    sh 'npx playwright install --with-deps chromium'
+                    // Skip Playwright browser install in Jenkins - browsers need root
+                    // Playwright E2E tests will only run if browsers are pre-installed
+                    sh 'npx playwright install chromium || echo "Skipping browser install - will use API tests only"'
                 }
             }
         }
