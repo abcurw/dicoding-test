@@ -1,0 +1,318 @@
+{
+  "info": {
+    "name": "Dicoding Jobs API - Black Box Tests",
+    "description": "Black box API tests for the job vacancy system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Vacancies",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"Response has data array\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('data');",
+              "    pm.expect(jsonData.data).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/vacancies",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies"]
+        }
+      }
+    },
+    {
+      "name": "Create Vacancy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 or 200\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "",
+              "pm.test(\"Response has vacancy data\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('data');",
+              "    pm.expect(jsonData.data).to.have.property('id');",
+              "    pm.expect(jsonData.data).to.have.property('title');",
+              "    pm.expect(jsonData.data.title).to.eql('Senior Backend Developer');",
+              "    ",
+              "    // Save ID for other tests",
+              "    pm.environment.set('vacancy_id', jsonData.data.id);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Senior Backend Developer\",\n  \"company_name\": \"Tech Innovations Ltd\",\n  \"company_image_url\": \"https://example.com/logo.png\",\n  \"job_type\": \"full-time\",\n  \"job_tenure\": \"permanent\",\n  \"job_status\": \"open\",\n  \"job_description\": \"We are looking for an experienced backend developer\",\n  \"job_qualification\": \"5+ years experience with Laravel and PHP\",\n  \"salary_min\": 15000000,\n  \"salary_max\": 25000000,\n  \"expired_at\": \"2026-12-31\",\n  \"is_remote\": true\n}"
+        },
+        "url": {
+          "raw": "{{api_url}}/vacancies",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies"]
+        }
+      }
+    },
+    {
+      "name": "Get Single Vacancy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Vacancy has correct structure\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.data).to.have.property('id');",
+              "    pm.expect(jsonData.data).to.have.property('title');",
+              "    pm.expect(jsonData.data).to.have.property('company_name');",
+              "    pm.expect(jsonData.data).to.have.property('job_type');",
+              "    pm.expect(jsonData.data).to.have.property('salary_min');",
+              "    pm.expect(jsonData.data).to.have.property('salary_max');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/vacancies/{{vacancy_id}}",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies", "{{vacancy_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Search Vacancies",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Search results contain keyword\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    if (jsonData.data.length > 0) {",
+              "        const hasKeyword = jsonData.data.some(vacancy => ",
+              "            vacancy.title.toLowerCase().includes('backend'))",
+              "        );",
+              "        pm.expect(hasKeyword).to.be.true;",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/vacancies?search=Backend",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies"],
+          "query": [
+            {
+              "key": "search",
+              "value": "Backend"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Vacancy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Vacancy was updated\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.data.title).to.eql('Updated Senior Backend Developer');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Senior Backend Developer\",\n  \"company_name\": \"Tech Innovations Ltd\",\n  \"company_image_url\": \"https://example.com/logo.png\",\n  \"job_type\": \"full-time\",\n  \"job_tenure\": \"permanent\",\n  \"job_status\": \"open\",\n  \"job_description\": \"Updated description for experienced backend developer\",\n  \"job_qualification\": \"5+ years experience with Laravel and PHP\",\n  \"salary_min\": 18000000,\n  \"salary_max\": 28000000,\n  \"expired_at\": \"2026-12-31\",\n  \"is_remote\": true\n}"
+        },
+        "url": {
+          "raw": "{{api_url}}/vacancies/{{vacancy_id}}",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies", "{{vacancy_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Delete Vacancy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 or 204\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/vacancies/{{vacancy_id}}",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies", "{{vacancy_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Validation Test - Missing Required Fields",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 422\", function () {",
+              "    pm.response.to.have.status(422);",
+              "});",
+              "",
+              "pm.test(\"Error message contains validation errors\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('errors');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Incomplete Job\"\n}"
+        },
+        "url": {
+          "raw": "{{api_url}}/vacancies",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies"]
+        }
+      }
+    },
+    {
+      "name": "Validation Test - Invalid Job Type",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 422\", function () {",
+              "    pm.response.to.have.status(422);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Test Job\",\n  \"company_name\": \"Test Company\",\n  \"company_image_url\": \"https://example.com/logo.png\",\n  \"job_type\": \"invalid-type\",\n  \"job_tenure\": \"permanent\",\n  \"job_status\": \"open\",\n  \"job_description\": \"Test\",\n  \"job_qualification\": \"Test\",\n  \"salary_min\": 5000000,\n  \"salary_max\": 10000000,\n  \"expired_at\": \"2026-12-31\",\n  \"is_remote\": true\n}"
+        },
+        "url": {
+          "raw": "{{api_url}}/vacancies",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies"]
+        }
+      }
+    },
+    {
+      "name": "Get Non-existent Vacancy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/vacancies/999999",
+          "host": ["{{api_url}}"],
+          "path": ["vacancies", "999999"]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "dicoding-test-env",
+  "name": "Dicoding Test Environment",
+  "values": [
+    {
+      "key": "api_url",
+      "value": "http://localhost:8000/api",
+      "enabled": true
+    },
+    {
+      "key": "vacancy_id",
+      "value": "1",
+      "enabled": true
+    }
+  ]
+}
