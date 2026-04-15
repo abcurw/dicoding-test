@@ -71,66 +71,40 @@ test.describe('Create Vacancy Page', () => {
     // Fill in job title
     const titleInput = page.locator('input[name="title"]');
     await expect(titleInput).toBeVisible();
-    await titleInput.click();
     await titleInput.fill('Automated Test - Senior Frontend Developer');
 
-    // Fill company name
-    const companyNameInput = page.locator('input[name="company_name"]');
-    if (await companyNameInput.isVisible()) {
-      await companyNameInput.click();
-      await companyNameInput.fill('Test Company Ltd');
-    }
+    // Select job type radio
+    await page.locator('input[name="job_type"][value="Full-Time"]').check();
 
-    // Fill company city
-    const companyCityInput = page.locator('input[name="company_city"]');
-    if (await companyCityInput.isVisible()) {
-      await companyCityInput.click();
-      await companyCityInput.fill('Jakarta');
-    }
+    // Fill candidates needed
+    await page.locator('input[name="candidates_needed"]').fill('2');
+
+    // Fill expired_at date
+    await page.locator('input[name="expired_at"]').fill('2026-12-31');
+
+    // Select company_city (it's a select dropdown)
+    await page.locator('select[name="company_city"]').selectOption({ index: 1 });
 
     // Fill description
     const descriptionInput = page.locator('textarea[name="description"]');
-    if (await descriptionInput.isVisible()) {
-      await descriptionInput.click();
-      await descriptionInput.fill('This is an automated test job posting for a Senior Frontend Developer position.');
-    }
+    await descriptionInput.clear();
+    await descriptionInput.fill('This is an automated test job posting for a Senior Frontend Developer position.');
 
-    // Select job type
-    const jobTypeSelect = page.locator('select[name="job_type"]');
-    if (await jobTypeSelect.isVisible()) {
-      await jobTypeSelect.selectOption('Full-Time');
-    }
+    // Fill salary range
+    await page.locator('input[name="salary_min"]').fill('5000000');
+    await page.locator('input[name="salary_max"]').fill('10000000');
 
-    // Fill candidates needed
-    const candidatesInput = page.locator('input[name="candidates_needed"]');
-    if (await candidatesInput.isVisible()) {
-      await candidatesInput.click();
-      await candidatesInput.fill('2');
-    }
+    // Select experience
+    await page.locator('input[name="experience_min"][value="1-3 tahun"]').check();
 
-    // Wait a moment to ensure form is ready
-    await page.waitForTimeout(1000);
+    // Submit the form
+    const submitButton = page.locator('button[type="submit"]');
+    await expect(submitButton).toBeVisible();
+    await submitButton.click();
 
-    // Look for submit button
-    const submitButton = page.locator('button[type="submit"]').or(
-      page.locator('button:has-text("Buat")').or(
-        page.locator('button:has-text("Simpan")')
-      )
-    );
-
-    if (await submitButton.isVisible()) {
-      await submitButton.click();
-
-      // Wait for either success message or redirect
-      await page.waitForTimeout(2000);
-
-      // Check if we're redirected to dashboard or see success message
-      const currentUrl = page.url();
-      const isRedirected = currentUrl.includes('/dashboard') && !currentUrl.includes('/create');
-      const hasSuccessMessage = await page.locator('text=berhasil').isVisible().catch(() => false);
-
-      expect(isRedirected || hasSuccessMessage).toBeTruthy();
-    }
+    // Wait for redirect to /dashboard after successful creation
+    await page.waitForURL('**/dashboard', { timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Lowongan Saya' })).toBeVisible();
   });
 });
 
@@ -160,13 +134,10 @@ test.describe('Blackbox E2E User Journey', () => {
     await expect(page.locator('h1').first()).toBeVisible();
 
     // Step 6: Navigate back to listing
-    const backButton = page.locator('text=Kembali ke daftar lowongan').or(
-      page.locator('a[href="/"]')
-    );
-    if (await backButton.isVisible()) {
-      await backButton.click();
-      await expect(page.locator('text=Daftar Pekerjaan Terbaru')).toBeVisible();
-    }
+    const backButton = page.getByRole('link', { name: 'Kembali ke daftar lowongan' });
+    await expect(backButton).toBeVisible();
+    await backButton.click();
+    await expect(page.locator('text=Daftar Pekerjaan Terbaru')).toBeVisible();
   });
 
   test('recruiter journey - view dashboard, navigate to create form', async ({ page }) => {

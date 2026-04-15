@@ -1,0 +1,22 @@
+<testsuites id="" name="" tests="9" failures="0" skipped="0" errors="0" time="20.440045">
+<testsuite name="vacancy.spec.ts" timestamp="2026-04-08T04:37:57.423Z" hostname="chromium" tests="9" failures="0" skipped="0" time="12.565" errors="0">
+<testcase name="Vacancy List Page › user opens the vacancies list page" classname="vacancy.spec.ts" time="1.05">
+</testcase>
+<testcase name="Vacancy List Page › user searches a job by title" classname="vacancy.spec.ts" time="1.67">
+</testcase>
+<testcase name="Vacancy List Page › user views vacancy details" classname="vacancy.spec.ts" time="1.266">
+</testcase>
+<testcase name="Dashboard Page › recruiter can view dashboard with vacancy list" classname="vacancy.spec.ts" time="0.837">
+</testcase>
+<testcase name="Dashboard Page › recruiter can navigate to create vacancy page" classname="vacancy.spec.ts" time="1.018">
+</testcase>
+<testcase name="Create Vacancy Page › form displays all required fields" classname="vacancy.spec.ts" time="0.871">
+</testcase>
+<testcase name="Create Vacancy Page › user can create a new vacancy with full form interaction" classname="vacancy.spec.ts" time="1.639">
+</testcase>
+<testcase name="Blackbox E2E User Journey › complete user journey - browse, search, view details, and navigate" classname="vacancy.spec.ts" time="2.879">
+</testcase>
+<testcase name="Blackbox E2E User Journey › recruiter journey - view dashboard, navigate to create form" classname="vacancy.spec.ts" time="1.335">
+</testcase>
+</testsuite>
+</testsuites>
